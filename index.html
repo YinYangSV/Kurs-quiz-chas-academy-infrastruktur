@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Muntlig Validering & VM-labb – YH03178</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-hover: #273549;
+      --border: #334155;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --primary: #38bdf8;
+      --primary-dark: #0284c7;
+      --success: #22c55e;
+      --success-bg: rgba(34, 197, 94, 0.14);
+      --danger: #ef4444;
+      --danger-bg: rgba(239, 68, 68, 0.14);
+      --vg: #f59e0b;
+      --vg-bg: rgba(245, 158, 11, 0.16);
+      --career: #c084fc;
+      --career-bg: rgba(192, 132, 252, 0.16);
+      --code-bg: #0b1120;
+      --radius: 12px;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35);
+    }
+
+    body.light {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-hover: #f1f5f9;
+      --border: #cbd5e1;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --success: #16a34a;
+      --success-bg: rgba(22, 163, 74, 0.1);
+      --danger: #dc2626;
+      --danger-bg: rgba(220, 38, 38, 0.1);
+      --vg: #d97706;
+      --vg-bg: rgba(217, 119, 6, 0.12);
+      --career: #7e22ce;
+      --career-bg: rgba(126, 34, 206, 0.12);
+      --code-bg: #f1f5f9;
+      --shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 1.25rem;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    button, select {
+      font-family: inherit;
+      font-size: 0.88rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      padding: 0.5rem 0.85rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    button:hover, select:hover {
+      background: var(--surface-hover);
+      border-color: var(--primary);
+    }
+
+    button.active {
+      background: var(--primary);
+      color: #0f172a;
+      border-color: var(--primary);
+      font-weight: 600;
+    }
+
+    body.light button.active {
+      color: #ffffff;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.55rem;
+      margin-bottom: 1.15rem;
+    }
+
+    .tab-btn {
+      padding: 0.7rem 0.5rem;
+      font-weight: 600;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.15rem;
+    }
+
+    .tab-btn span.tab-desc {
+      font-size: 0.73rem;
+      font-weight: 400;
+      opacity: 0.85;
+    }
+
+    .filters {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.85rem 1rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    select {
+      max-width: 290px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.45rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.15rem;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      align-items: center;
+    }
+
+    .badge {
+      font-size: 0.74rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      background: rgba(56, 189, 248, 0.14);
+      color: var(--primary);
+    }
+
+    .badge.vg {
+      background: var(--vg-bg);
+      color: var(--vg);
+    }
+
+    .badge.career {
+      background: var(--career-bg);
+      color: var(--career);
+    }
+
+    .flag-btn {
+      font-size: 0.8rem;
+      padding: 0.3rem 0.65rem;
+    }
+
+    .flag-btn.flagged {
+      background: var(--vg-bg);
+      border-color: var(--vg);
+      color: var(--vg);
+      font-weight: 600;
+    }
+
+    .question-text {
+      font-size: 1.12rem;
+      font-weight: 600;
+      margin-bottom: 1.1rem;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .option-btn {
+      text-align: left;
+      padding: 0.82rem 1rem;
+      font-size: 0.94rem;
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      line-height: 1.45;
+    }
+
+    .option-btn.correct {
+      background: var(--success-bg);
+      border-color: var(--success);
+      color: var(--text);
+    }
+
+    .option-btn.wrong {
+      background: var(--danger-bg);
+      border-color: var(--danger);
+      color: var(--text);
+    }
+
+    .option-letter {
+      font-weight: 700;
+      color: var(--primary);
+      min-width: 1.2rem;
+    }
+
+    .feedback-box {
+      margin-top: 1.15rem;
+      padding: 1rem;
+      border-radius: 8px;
+      background: rgba(56, 189, 248, 0.08);
+      border-left: 4px solid var(--primary);
+      font-size: 0.93rem;
+      display: none;
+    }
+
+    .feedback-box.visible {
+      display: block;
+    }
+
+    .followup-box {
+      margin-top: 0.9rem;
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+      background: var(--vg-bg);
+      border-left: 4px solid var(--vg);
+      font-size: 0.91rem;
+    }
+
+    .keywords {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin: 0.7rem 0 0.95rem;
+    }
+
+    .keyword-pill {
+      font-size: 0.79rem;
+      padding: 0.22rem 0.58rem;
+      border-radius: 999px;
+      background: var(--success-bg);
+      border: 1px solid var(--success);
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .nav-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .progress-info {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .scenario-box {
+      background: rgba(148, 163, 184, 0.08);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.95rem;
+      margin-bottom: 0.95rem;
+      font-size: 0.94rem;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      background: rgba(148, 163, 184, 0.16);
+      padding: 0.12rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.87em;
+    }
+
+    /* VM Lab specific styles */
+    .topology-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 0.75rem;
+      margin: 0.9rem 0;
+    }
+
+    .vm-node {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem;
+      background: rgba(148, 163, 184, 0.05);
+      font-size: 0.88rem;
+    }
+
+    .vm-node h4 {
+      color: var(--primary);
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
+    }
+
+    .progress-bar-wrap {
+      width: 100%;
+      height: 10px;
+      background: var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 0.6rem 0 0.25rem;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--success);
+      transition: width 0.25s ease;
+    }
+
+    .task-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      margin: 0.85rem 0;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      padding: 0.65rem 0.8rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: rgba(148, 163, 184, 0.04);
+      cursor: pointer;
+    }
+
+    .task-item.done {
+      background: var(--success-bg);
+      border-color: rgba(34, 197, 94, 0.45);
+    }
+
+    .task-item input[type="checkbox"] {
+      margin-top: 0.25rem;
+      width: 16px;
+      height: 16px;
+      accent-color: var(--success);
+      cursor: pointer;
+    }
+
+    .cmd-block {
+      position: relative;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.8rem 4.5rem 0.8rem 0.9rem;
+      margin: 0.65rem 0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.83rem;
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.5;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 0.45rem;
+      right: 0.45rem;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.55rem;
+    }
+
+    .sabotage-card {
+      border-left: 4px solid var(--danger);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 720px) {
+      .tabs {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .card {
+        padding: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Muntlig Validering & VM-labb</h1>
+        <p class="subtitle">Grundkurs operativsystem, hårdvara och datacenter (YH03178) – Kursmål 1–17</p>
+      </div>
+      <div class="header-actions">
+        <button id="shuffleBtn" title="Blanda frågor och svarsalternativ">Blanda</button>
+        <button id="themeBtn" title="Byt ljust/mörkt tema">Ljust läge</button>
+      </div>
+    </header>
+
+    <nav class="tabs" aria-label="Övningslägen">
+      <button class="tab-btn active" data-mode="quiz">
+        1. Snabbkollen
+        <span class="tab-desc">Flervalsfrågor & facit</span>
+      </button>
+      <button class="tab-btn" data-mode="flashcards">
+        2. Förklara högt
+        <span class="tab-desc">Muntliga kort & nyckelord</span>
+      </button>
+      <button class="tab-btn" data-mode="scenarios">
+        3. Scenarioläge
+        <span class="tab-desc">Felsökning & arkitektur</span>
+      </button>
+      <button class="tab-btn" data-mode="vmlab">
+        4. VM-labb
+        <span class="tab-desc">Skarp övning & sabotage</span>
+      </button>
+    </nav>
+
+    <section class="filters" id="filterBar" aria-label="Filter">
+      <div class="filter-group">
+        <select id="groupFilter" aria-label="Filtrera på huvudområde">
+          <option value="all">Alla områden (1–17)</option>
+          <option value="Kunskaper">Kunskaper (1–6)</option>
+          <option value="Färdigheter">Färdigheter (7–16)</option>
+          <option value="Kompetenser">Kompetenser (17)</option>
+          <option value="VG">Endast ★VG-krav (7, 8, 12)</option>
+        </select>
+
+        <select id="topicFilter" aria-label="Filtrera på specifik punkt">
+          <option value="all">Alla delmoment (1–17)</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <button id="flaggedOnlyBtn">Endast markerade (0)</button>
+        <span class="progress-info" id="scoreDisplay">Poäng: 0 / 0</span>
+      </div>
+    </section>
+
+    <main id="appContainer"></main>
+  </div>
+
+  <script>
+    const TOPICS = [
+      { id: 1, group: "Kunskaper", tag: "", title: "1. Datacenter, säkerhet och energi" },
+      { id: 2, group: "Kunskaper", tag: "", title: "2. Redundansprincipen" },
+      { id: 3, group: "Kunskaper", tag: "", title: "3. Linux- och Windows-servrar" },
+      { id: 4, group: "Kunskaper", tag: "", title: "4. Filsystem och behörigheter" },
+      { id: 5, group: "Kunskaper", tag: "", title: "5. Backup och återställning" },
+      { id: 6, group: "Kunskaper", tag: "", title: "6. Säker konfiguration och åtkomst" },
+      { id: 7, group: "Färdigheter", tag: "VG", title: "7. Installera Linux-servrar ★VG" },
+      { id: 8, group: "Färdigheter", tag: "VG", title: "8. Användare, behörigheter, fildelning ★VG" },
+      { id: 9, group: "Färdigheter", tag: "", title: "9. Windows-server och katalogtjänst" },
+      { id: 10, group: "Färdigheter", tag: "", title: "10. Genomföra backup/återställning" },
+      { id: 11, group: "Färdigheter", tag: "", title: "11. Härda serverkonfiguration" },
+      { id: 12, group: "Färdigheter", tag: "VG", title: "12. Dokumentera konfig. och drift ★VG" },
+      { id: 13, group: "Färdigheter", tag: "", title: "13. AI-stöd vid konfig. och felsökning" },
+      { id: 14, group: "Färdigheter", tag: "Career", title: "14. Presentera egen kompetens ♦Career" },
+      { id: 15, group: "Färdigheter", tag: "Career", title: "15. Urval av organisationer ♦Career" },
+      { id: 16, group: "Färdigheter", tag: "", title: "16. Samarbeta i gemensamt Git-repo" },
+      { id: 17, group: "Kompetenser", tag: "", title: "17. Bygga och motivera servermiljö" }
+    ];
+
+    const QUIZ_DATA = [
+      {
+        id: "q1", topicId: 1,
+        question: "Vad är syftet med ISO 50001 och EU Code of Conduct for Data Centres inom datacenterdrift?",
+        options: [
+          "Att skapa systematisk energiledning och följa branschpraxis för att minska energiförbrukning, kylläckage och PUE",
+          "Att reglera hur många användarkonton som får skapas i Active Directory",
+          "Att ersätta behovet av UPS och dieselgeneratorer i serverhallar",
+          "Att definiera krypteringsalgoritmer för SSH-nycklar"
+        ],
+        correct: 0,
+        explanation: "ISO 50001 är en internationell standard för systematiskt energiledningsarbete (Plan-Do-Check-Act), medan EU Code of Conduct for Data Centres ger konkreta riktlinjer för energieffektivitet i serverhallar (t.ex. luftflödeshantering, högre tilluftstemperatur och mätning av PUE)."
+      },
+      {
+        id: "q2", topicId: 1,
+        question: "Vad mäter nyckeltalet PUE (Power Usage Effectiveness) i ett datacenter?",
+        options: [
+          "Total energi som går in i datacentret dividerat med energin som går till själva IT-utrustningen",
+          "Hur många procent av servrarna som körs på förnybar el",
+          "Maximal batteritid i en UPS vid full last",
+          "Antalet redundanta kylaggregat per serverrack"
+        ],
+        correct: 0,
+        explanation: "PUE = Total Facility Energy / IT Equipment Energy. Ett PUE nära 1.0 innebär att nästan all energi går till servrarna och minimalt svinn går till kylning och kraftomvandling."
+      },
+      {
+        id: "q3", topicId: 2,
+        question: "Vad är den avgörande skillnaden mellan redundansnivåerna N+1 och 2N?",
+        options: [
+          "N+1 har en extra reservkomponent utöver behovet, medan 2N har två helt oberoende parallella system",
+          "N+1 gäller endast hårddiskar och 2N gäller endast nätverkskort",
+          "2N kräver dubbelt så många IP-adresser men saknar failover",
+          "N+1 ger noll avbrottstid medan 2N kräver manuell omstart"
+        ],
+        correct: 0,
+        explanation: "Om en serverhall behöver 3 kylaggregat (N=3) innebär N+1 totalt 4 aggregat. 2N innebär 3+3 helt separata kedjor (t.ex. dubbla elmatningar A och B hela vägen till serverns dubbla PSU:er)."
+      },
+      {
+        id: "q4", topicId: 2,
+        question: "En kollega säger: 'Vi kör RAID 10 på filservern, så vi behöver ingen backup.' Vad är fel i det resonemanget?",
+        options: [
+          "RAID skyddar mot hårdvarufel på disk, inte mot ransomware, oavsiktlig radering eller korrupta filer",
+          "RAID 10 saknar paritet och klarar inte att en disk går sönder",
+          "RAID fungerar bara på Windows-servrar och inte på Linux",
+          "RAID 10 komprimerar filerna så att de inte går att återställa"
+        ],
+        correct: 0,
+        explanation: "RAID är tillgänglighet (redundans), inte backup. Raderas en fil eller krypteras disken av ransomware speglas den skadan omedelbart till alla diskar i RAID-arrayen."
+      },
+      {
+        id: "q5", topicId: 3,
+        question: "Varför rekommenderas ofta Windows Server Core (utan GUI) eller minimal Linux-installation i produktion?",
+        options: [
+          "Mindre attackyta, lägre resursförbrukning (RAM/CPU) och färre omstarter vid uppdateringar",
+          "Det går inte att installera Active Directory eller SSH om ett grafiskt gränssnitt finns",
+          "Licenskostnaden blir helt gratis på Windows Server Core",
+          "Filsystemen NTFS och ext4 fungerar snabbare utan skrivbordsmiljö"
+        ],
+        correct: 0,
+        explanation: "Färre installerade paket och tjänster ger färre sårbarheter att patcha, lägre minnesåtgång och mer stabil drift."
+      },
+      {
+        id: "q6", topicId: 4,
+        question: "Vad innebär rättigheten 2770 (rwxrws---) på en delad projektmapp i Linux?",
+        options: [
+          "Ägaren och gruppen har fulla rättigheter, övriga saknar åtkomst, och nya filer ärver mappens gruppägarskap (setgid)",
+          "Endast root kan radera filer i mappen (sticky bit)",
+          "Alla användare i systemet kan läsa men inte skriva",
+          "Filerna krypteras automatiskt med 2770-bitars nyckel"
+        ],
+        correct: 0,
+        explanation: "Siffran 2 aktiverar setgid på katalogen, vilket gör att alla nya filer och undermappar automatiskt får samma gruppägare som huvudmappen – avgörande för delade projektmappar."
+      },
+      {
+        id: "q7", topicId: 4,
+        question: "Hur beräknas den effektiva behörigheten när en användare ansluter till en Windows-utdelning (SMB Share) över nätverket?",
+        options: [
+          "Den mest restriktiva kombinationen av Share-behörigheten och NTFS-behörigheten gäller",
+          "Share-behörigheten skriver alltid över NTFS-behörigheten",
+          "NTFS-behörigheten gäller bara lokalt och ignoreras alltid över nätverk",
+          "Användaren får den högsta behörigheten av de två"
+        ],
+        correct: 0,
+        explanation: "Windows utvärderar både Share-rättigheter och NTFS-rättigheter och tillämpar det mest restriktiva utfallet. Därför sätts ofta Share till 'Authenticated Users: Change/Full Control' medan finstyrningen görs i NTFS."
+      },
+      {
+        id: "q8", topicId: 5,
+        question: "Vad innebär 3-2-1-regeln inom backupstrategi?",
+        options: [
+          "3 kopior av datan, på 2 olika lagringsmedier, varav minst 1 kopia offsite (geografiskt skild)",
+          "3 fulla backuper i veckan, 2 inkrementella och 1 differentiell",
+          "3 timmars RTO, 2 timmars RPO och 1 års lagringstid",
+          "3 administratörer, 2 backupservrar och 1 krypteringsnyckel"
+        ],
+        correct: 0,
+        explanation: "3-2-1 skyddar både mot lokal hårdvarukrasch och mot brand/stöld i serverrummet. Idag utökas den ofta till 3-2-1-1-0 (1 offline/immutable och 0 fel vid verifiering)."
+      },
+      {
+        id: "q9", topicId: 5,
+        question: "Vad beskriver begreppen RPO och RTO vid en driftstörning?",
+        options: [
+          "RPO är maximal acceptabel dataförlust i tid; RTO är maximal acceptabel nedtid innan systemet är igång igen",
+          "RPO är bandbredden till backupservern; RTO är diskarnas läshastighet",
+          "RPO anger hur ofta lösenord byts; RTO anger hur länge loggar sparas",
+          "RPO gäller bara molnbackup; RTO gäller bara lokala bandstationer"
+        ],
+        correct: 0,
+        explanation: "Har ni backup var 4:e timme är RPO max 4 timmar. Tar återställningen 2 timmar är RTO 2 timmar."
+      },
+      {
+        id: "q10", topicId: 6,
+        question: "Vilken kombination av åtgärder säkrar SSH-åtkomst mot brute-force-attacker mest effektivt?",
+        options: [
+          "Nyckelbaserad autentisering (PubkeyAuthentication), PasswordAuthentication no och PermitRootLogin no",
+          "Att enbart byta SSH-port från 22 till 2222 och behålla lösenordsinloggning",
+          "Att tillåta root-inloggning men aktivera Telnet som reserv",
+          "Att ställa in chmod 777 på ~/.ssh/authorized_keys"
+        ],
+        correct: 0,
+        explanation: "Att stänga av lösenordsinloggning och direkt root-login eliminerar risken för gissade lösenord. Dessutom kräver SSH strikta rättigheter (700 på ~/.ssh och 600 på authorized_keys)."
+      },
+      {
+        id: "q11", topicId: 7,
+        question: "Vad används verktyg som Ubuntu Autoinstall (cloud-init), Kickstart eller Preseed till enligt kursmål 7?",
+        options: [
+          "Automatiserad och repeterbar installation av Linux-servrar utifrån en deklarativ konfigurationsfil",
+          "Att övervaka CPU-temperatur i fysiska datacenter",
+          "Att konvertera NTFS-partitioner till ext4 utan dataförlust",
+          "Att generera Group Policy Objects i Active Directory"
+        ],
+        correct: 0,
+        explanation: "Automatiserad installation (t.ex. cloud-init/autoinstall med user-data YAML) gör att servrar kan installeras identiskt, snabbt och utan manuella klickfel – ett centralt VG-moment."
+      },
+      {
+        id: "q12", topicId: 7,
+        question: "Varför väljer man ofta att lägga /var och /home på egna LVM-volymer vid installation av en Linux-server?",
+        options: [
+          "För att skenande loggfiler i /var eller användardata i /home inte ska fylla rotfilsystemet (/) och krascha OS:et",
+          "För att Linux-kärnan inte kan boota utan separata partitioner för /home",
+          "För att LVM automatiskt replikerar data till molnet",
+          "För att SSH bara fungerar om /var ligger på en egen fysisk disk"
+        ],
+        correct: 0,
+        explanation: "Separata volymer isolerar diskutrymmet och LVM gör det möjligt att enkelt utöka volymer online vid behov."
+      },
+      {
+        id: "q13", topicId: 8,
+        question: "Vad krävs i Samba (Linux) för att en Linux-användare ska kunna logga in mot en SMB-utdelning?",
+        options: [
+          "Användaren måste finnas i Linux-systemet OCH ha ett separat Samba-lösenord satt med smbpasswd -a",
+          "Det räcker att lägga till användaren i /etc/sudoers",
+          "Samba läser lösenorden direkt från /etc/shadow i klartext",
+          "Man måste installera Active Directory på Linux-servern först"
+        ],
+        correct: 0,
+        explanation: "Eftersom SMB använder NTLM-hashar som inte kan härledas ur Linux /etc/shadow måste användaren aktiveras i Samba-databasen via smbpasswd -a."
+      },
+      {
+        id: "q14", topicId: 8,
+        question: "Vad innebär principen AGDLP vid behörighetsstyrning i katalogtjänster?",
+        options: [
+          "Accounts läggs i Global Groups, som läggs i Domain Local Groups, som tilldelas Permissions på resursen",
+          "Administrators ger direkt behörighet till enskilda användarkonton på varje mapp",
+          "Alla grupper görs till Domain Admins för att undvika åtkomstfel",
+          "Authentication, Gateway, DNS, LDAP och Proxy"
+        ],
+        correct: 0,
+        explanation: "Rollbaserad gruppstruktur (AGDLP) gör behörighetshanteringen skalbar och enkel att revidera utan att ändra ACL:er direkt på filsystemet."
+      },
+      {
+        id: "q15", topicId: 9,
+        question: "Varför är en korrekt fungerande DNS helt avgörande för Active Directory Domain Services (AD DS)?",
+        options: [
+          "Klienter använder DNS SRV-poster för att hitta domänkontrollanter, Kerberos-tjänster och LDAP",
+          "DNS lagrar användarnas lösenordshashar i A-poster",
+          "Utan publik DNS från internet kan inga lokala GPO:er appliceras",
+          "DNS krypterar all SMB-trafik mellan klient och filserver"
+        ],
+        correct: 0,
+        explanation: "Vid domänanslutning och inloggning frågar klienten DNS efter SRV-poster (t.ex. _ldap._tcp.dc._msdcs...) för att lokalisera rätt domänkontrollant."
+      },
+      {
+        id: "q16", topicId: 9,
+        question: "Vad är den huvudsakliga skillnaden mellan en Security Group och en Organizational Unit (OU) i Active Directory?",
+        options: [
+          "Security Groups används för att tilldela behörigheter till resurser; OU:er används för att strukturera objekt och länka Group Policy Objects (GPO)",
+          "OU:er används för att ge läsrättigheter på filservrar, medan Security Groups kör PowerShell-skript",
+          "Användare kan bara tillhöra en Security Group men flera OU:er samtidigt",
+          "Det finns ingen funktionell skillnad, bara olika ikoner"
+        ],
+        correct: 0,
+        explanation: "Ett AD-objekt kan bara ligga i en OU åt gången (hierarkisk struktur för GPO och delegering), men kan vara medlem i många Security Groups."
+      },
+      {
+        id: "q17", topicId: 10,
+        question: "Vilken flagga i rsync säkerställer att filrättigheter, ägarskap, tidsstämplar och symboliska länkar bevaras vid backup?",
+        options: [
+          "-a (archive mode)",
+          "-f (force overwrite)",
+          "-p (plain text)",
+          "-d (delete source)"
+        ],
+        correct: 0,
+        explanation: "rsync -a motsvarar -rlptgoD och bevarar rekursiv struktur, länkar, rättigheter, tidsstämplar och ägare/grupp."
+      },
+      {
+        id: "q18", topicId: 10,
+        question: "Vad är det viktigaste steget efter att ett automatiserat backupjobb har satts upp?",
+        options: [
+          "Att genomföra och dokumentera en faktisk teståterställning (test-restore) för att verifiera att datan är läsbar",
+          "Att radera originalfilerna för att spara utrymme",
+          "Att stänga av loggning så att disken inte blir full",
+          "Att ge alla användare skrivrättigheter till backupkatalogen"
+        ],
+        correct: 0,
+        explanation: "En backup som aldrig har teståterställts är bara en förhoppning. Korrupta arkiv eller felaktiga sökvägar upptäcks först vid test-restore."
+      },
+      {
+        id: "q19", topicId: 11,
+        question: "Vad används verktyg som CIS Benchmarks och Lynis till vid serverdrift?",
+        options: [
+          "Att systematiskt granska och härda operativsystem och tjänster mot kända säkerhetsbrister och felkonfigurationer",
+          "Att mäta nätverkets genomströmning mellan två switchar",
+          "Att automatiskt generera SSL-certifikat från Let's Encrypt",
+          "Att konvertera virtuella maskiner mellan VirtualBox och Hyper-V"
+        ],
+        correct: 0,
+        explanation: "CIS Benchmarks ger konkreta härdningsriktlinjer och Lynis skannar Linux-systemet för att ge ett hardening index samt åtgärdsförslag."
+      },
+      {
+        id: "q20", topicId: 12,
+        question: "Vilket är det främsta skälet till att dokumentera serverkonfiguration, IP-plan och återställningsrutiner enligt fastställd mall?",
+        options: [
+          "Att en annan tekniker ska kunna ta över driften, felsöka incidenter och spåra ändringar utan gissningar",
+          "Enbart för att uppfylla ett formellt krav inför betygsättning",
+          "För att ersätta behovet av övervakning och loggning",
+          "För att användarna själva ska kunna administrera domänkontrollanten"
+        ],
+        correct: 0,
+        explanation: "VG-kriteriet för kursmål 12 betonar att dokumentationen ska vara så tydlig, fullständig och spårbar att en annan tekniker direkt kan ta över driften."
+      },
+      {
+        id: "q21", topicId: 13,
+        question: "Vad kräver kursmål 13 när du använder generativa AI-verktyg vid konfiguration och felsökning?",
+        options: [
+          "Att du verifierar verktygets förslag mot eget testresultat och dokumenterar när förslagen avviker (samt aldrig delar känslig data)",
+          "Att du kopierar in AI-genererade skript direkt i produktion utan att testa dem",
+          "Att du låter AI skriva hela din individuella reflektion utan egen bearbetning",
+          "Att du klistrar in riktiga lösenord och privata nycklar i prompten för mer exakta svar"
+        ],
+        correct: 0,
+        explanation: "AI-förslag kan innehålla felaktiga flaggor för din specifika OS-version. Att testa i VM, jämföra utfallet och dokumentera avvikelser visar verklig ingenjörsförståelse."
+      },
+      {
+        id: "q22", topicId: 14,
+        question: "Hur presenterar du din tekniska kompetens mest övertygande (kursmål 14 ♦Career)?",
+        options: [
+          "Tydligt och mottagaranpassat genom att koppla konkreta tekniska färdigheter (t.ex. härdning, backup, AD) till vilket värde och vilken trygghet de ger verksamheten",
+          "Genom att räkna upp så många förkortningar som möjligt utan sammanhang",
+          "Genom att säga att man enbart följt instruktioner steg för steg utan egna beslut",
+          "Genom att undvika att nämna felsökning eftersom det visar att något gick fel"
+        ],
+        correct: 0,
+        explanation: "Kursmål 14 bedöms av karriärcoach (IG/G) och handlar om att presentera kompetens, erfarenhet och yrkesprofil mottagaranpassat."
+      },
+      {
+        id: "q23", topicId: 15,
+        question: "Vad ska styra ditt urval av organisationer i kursmål 15 (♦Career)?",
+        options: [
+          "Analys av arbetslivsnära information motiverad utifrån relevans, tekniskt sammanhang och egen kompetensprofil",
+          "Enbart företagets logotyp och antal följare i sociala medier",
+          "Att organisationen helt saknar IT-infrastruktur",
+          "Bara de största globala bolagen utan koppling till din egen profil"
+        ],
+        correct: 0,
+        explanation: "Kursmål 15 prövas genom en individuell inlämning där du motiverar urvalet av relevanta organisationer kopplat till tekniskt sammanhang och din profil."
+      },
+      {
+        id: "q24", topicId: 16,
+        question: "Varför är grenhantering och Pull Requests i ett gemensamt Git-repo avgörande i kursens teamprojekt?",
+        options: [
+          "För att varje teammedlems bidrag ska bli individuellt spårbart i versionshistoriken och ändringar granskas före sammanslagning",
+          "För att alla i gruppen ska kunna pusha direkt till main utan granskning",
+          "För att Git automatiskt installerar paket på Ubuntu-servern",
+          "För att ersätta behovet av backup på filservern"
+        ],
+        correct: 0,
+        explanation: "Kursplanen kräver att varje studerandes individuella bidrag kan säkerställas vid teamleverans – commits, branches och PR-granskningar i Git bevisar vem som gjort vad."
+      },
+      {
+        id: "q25", topicId: 17,
+        question: "Vad händer vid den muntliga valideringen om din servermiljö har en mindre brist, enligt kursplanen?",
+        options: [
+          "Arbetet kan ändå godkännas om du själv kan förklara vad som inte fungerar och vad som krävs för att åtgärda det",
+          "Du blir automatiskt underkänd oavsett hur väl du förstår felet",
+          "Examinatorn loggar in och rättar konfigurationen åt dig utan frågor",
+          "Enbart den skriftliga inlämningen bedöms utan samtal"
+        ],
+        correct: 0,
+        explanation: "Kursplanen betonar förståelse före felfri fasad: ett arbete med brister kan godkännas om du kan redogöra för felorsaken och åtgärden, medan ett arbete du inte kan förklara inte godkänns."
+      }
+    ];
+
+    const FLASHCARD_DATA = [
+      {
+        id: "f1", topicId: 1,
+        question: "Redogör för datacentrets huvudkomponenter, fysisk säkerhet, UPS/kylning samt ISO 50001 och EU Code of Conduct for Data Centres.",
+        keywords: ["Skalskydd & passerkontroll", "UPS & reservkraft", "Hot/Cold aisle & PUE", "Brandskydd (inert gas)", "ISO 50001 (energiledning)", "EU Code of Conduct"],
+        modelAnswer: "Fysisk säkerhet bygger på skalskydd i zoner, loggad passerkontroll och kameraövervakning. Kraft säkras via UPS (överbryggar kortare avbrott tills reservkraft startar) och kylning optimeras med varma/kalla gångar (mäts via PUE). ISO 50001 ger ett systematiskt ledningssystem för ständiga energiförbättringar, medan EU Code of Conduct for Data Centres ger konkreta branschriktlinjer för t.ex. luftflödeshantering och temperaturintervall.",
+        followup: "Varför använder man inert gas istället för vattensprinkler i en serverhall?"
+      },
+      {
+        id: "f2", topicId: 2,
+        question: "Förklara redundansprincipen som motivering bakom UPS, dubblerade nätaggregat och RAID, samt hur ni undviker Single Point of Failure (SPOF).",
+        keywords: ["SPOF", "N+1 vs 2N", "Dubbla PSU (A/B-matning)", "UPS", "RAID 1/5/6/10", "RAID ≠ Backup"],
+        modelAnswer: "Redundans eliminerar Single Points of Failure (SPOF) genom att dubblera kritiska länkar. Dubbla nätaggregat (PSU) ansluts till separata UPS-kretsar (A- och B-matning), och RAID skyddar mot fysiska diskhaverier utan nedtid. Vi skiljer på N+1 (en reservkomponent) och 2N (två helt parallella system). Dock ersätter RAID aldrig backup eftersom logiska fel och ransomware speglas direkt.",
+        followup: "Om en server har dubbla nätaggregat men båda är inkopplade i samma grenuttag – har vi uppnått redundans då?"
+      },
+      {
+        id: "f3", topicId: 3,
+        question: "Förklara installation, konfiguration och administration av Linux- och Windows-servrar samt katalog- och inloggningstjänster.",
+        keywords: ["Linux (CLI, SSH, systemd)", "Windows Server (Core/GUI, PowerShell)", "Active Directory (AD DS)", "LDAP & Kerberos", "Central identitetshantering"],
+        modelAnswer: "Linux-servrar administreras ofta huvudlöst via SSH och CLI med tjänstehantering i systemd, medan Windows Server administreras via GUI, PowerShell eller WinRM. Katalog- och inloggningstjänster som Active Directory (AD DS) eller LDAP samlar användare, grupper och datorer på ett ställe för central autentisering (Kerberos) och policystyrning.",
+        followup: "Vilka fördelar ger en central katalogtjänst jämfört med att skapa lokala användarkonton på varje enskild server?"
+      },
+      {
+        id: "f4", topicId: 4,
+        question: "Förklara filsystem, behörigheter och användarhantering samt fildelning över nätverk (SMB/NFS).",
+        keywords: ["ext4 / XFS / NTFS", "POSIX (rwx, chown, chmod 2770)", "NTFS ACL & arv", "Share vs NTFS (mest restriktiva)", "SMB (Samba) vs NFS"],
+        modelAnswer: "Linux använder filsystem som ext4 eller XFS med ägare/grupp/övriga (rwx) och setgid (2770) för grupparv i delade mappar. Windows använder NTFS med detaljerade ACL:er. Vid nätverksdelning över SMB kombineras Share-rättigheter och NTFS-rättigheter där den mest restriktiva alltid vinner. NFS används främst mellan Linux/Unix-system och styr åtkomst per IP/subnät.",
+        followup: "Vad gör flaggan setgid (siffran 2 i chmod 2770) på en delad mapp i Linux?"
+      },
+      {
+        id: "f5", topicId: 5,
+        question: "Redogör för principer för backup och återställning i en servermiljö.",
+        keywords: ["3-2-1-1-0-regeln", "Full / Inkrementell / Differentiell", "RPO & RTO", "Immutable / offline backup", "Verifierad test-restore"],
+        modelAnswer: "Backup utgår från verksamhetens RPO (maximal acceptabel dataförlust) och RTO (maximal nedtid). Datan lagras enligt 3-2-1-principen (3 kopior, 2 medier, 1 offsite), helst utökad med 1 immutable/offline-kopia mot ransomware och 0 fel vid verifiering. En backupstrategi är inte komplett förrän återställning har testats praktiskt.",
+        followup: "Hur påverkas återställningstiden (RTO) om du kör inkrementell backup jämfört med differentiell backup?"
+      },
+      {
+        id: "f6", topicId: 6,
+        question: "Förklara grundläggande säkra konfigurationer och åtkomstkontroll i operativsystem som del av ett säkerhetsmedvetet arbetssätt.",
+        keywords: ["Principle of Least Privilege", "SSH-nycklar", "Inaktiverad root/Administrator", "Brandvägg (default deny)", "Segmentering / VLAN"],
+        modelAnswer: "Ett säkerhetsmedvetet arbetssätt utgår från minsta möjliga privilegium (PoLP) och defense-in-depth. Brandväggen blockerar all inkommande trafik som standard (default deny), administrativ inloggning kräver krypterade protokoll och SSH-nycklar, direkt root-inloggning stängs av och vanliga arbetsuppgifter utförs aldrig med administratörskonton.",
+        followup: "Varför bör man separera sitt vanliga användarkonto från sitt administrativa konto?"
+      },
+      {
+        id: "f7", topicId: 7,
+        question: "★VG: Hur installerar och konfigurerar du Linux-servrar både manuellt och automatiserat, och hur felsöker du systematiskt?",
+        keywords: ["Minimal installation & LVM", "Autoinstall / cloud-init (YAML)", "Statisk IP (Netplan) & NTP", "Systematisk felsökning (lager för lager)", "journalctl / systemctl / ss"],
+        modelAnswer: "Vid manuell installation väljer jag minimal serverbild, LVM-partitionering (/var, /home separerade) och statisk IP via Netplan. För automatiserad installation används t.ex. Ubuntu Autoinstall (cloud-init med user-data.yaml) så servrar kan rullas ut identiskt utan handpåläggning. Vid felsökning arbetar jag systematiskt nerifrån och upp: nätverkslager (ip a, ping, ss), tjänstestatus (systemctl status) och loggar (journalctl -xe).",
+        followup: "Ge ett exempel på hur du systematiskt felsöker om en nysatt webb- eller filserver inte går att nå från en klient."
+      },
+      {
+        id: "f8", topicId: 8,
+        question: "★VG: Hur sätter du upp en korrekt och säker behörighetsstruktur och fildelning med minsta-rättighet-principen, och hur motiverar du dina val?",
+        keywords: ["Rollbaserade grupper (inte individ)", "Principle of Least Privilege", "chmod 2770 & setgid", "Samba (valid users = @grupp)", "AGDLP i Windows"],
+        modelAnswer: "Jag tilldelar aldrig rättigheter direkt till enskilda användare utan skapar rollbaserade grupper. På Linux skapar jag mappar med gruppägarskap och rättigheten 2770 så att obehöriga helt saknar läsrättighet och nya filer ärver gruppen. I Samba begränsas utdelningen med 'valid users = @grupp'. Det minimerar risken för dataläckage och gör det enkelt att lägga till eller ta bort personal.",
+        followup: "Varför sätter vi 2770 istället för 2775 på känsliga avdelningsmappar?"
+      },
+      {
+        id: "f9", topicId: 9,
+        question: "Förklara hur du installerar och konfigurerar en Windows-servermiljö med Active Directory (AD DS), DNS och Group Policy.",
+        keywords: ["AD DS & Domänkontrollant", "Integrerad DNS & SRV-poster", "OU-hierarki", "GPO (säkerhet & konfiguration)", "AGDLP-grupper"],
+        modelAnswer: "Jag sätter statisk IP, installerar rollen AD DS tillsammans med DNS och befordrar servern till domänkontrollant. Därefter bygger jag en logisk OU-struktur för användare, grupper och datorer för att kunna länka Group Policy Objects (GPO) som styr lösenordskrav, brandvägg och säkerhetsinställningar, samt organiserar behörigheter via Security Groups.",
+        followup: "Varför måste DNS fungera felfritt innan en Windows-klient kan anslutas till domänen?"
+      },
+      {
+        id: "f10", topicId: 10,
+        question: "Hur genomför och verifierar du backup och återställning enligt en given rutin?",
+        keywords: ["rsync / tar / Windows Server Backup", "Schemaläggning (cron / systemd timer)", "Loggning & larm", "Test-restore till separat katalog", "Integritetskontroll (diff / sha256sum)"],
+        modelAnswer: "Jag konfigurerar ett automatiserat backupjobb enligt rutinen (t.ex. rsync -a med loggning via cron eller systemd timer) till en separat lagringsplats. Efter körning verifierar jag loggarna och genomför en praktisk återställning till en testkatalog där jag kontrollerar att filer, innehåll och behörigheter stämmer med originalet.",
+        followup: "Vad riskerar att hända om du testar återställning direkt ovanpå produktionskatalogen istället för en testkatalog?"
+      },
+      {
+        id: "f11", topicId: 11,
+        question: "Hur härdar du en grundläggande serverkonfiguration enligt checklista?",
+        keywords: ["CIS Benchmarks & Lynis", "Stäng onödiga tjänster/portar", "Brandvägg (UFW / Windows Firewall)", "SSH-härdning & Fail2ban", "Säkerhetsuppdateringar"],
+        modelAnswer: "Jag arbetar utifrån en härdningschecklista baserad på CIS Benchmarks: inventerar och stänger av onödiga tjänster och portar, aktiverar brandvägg med default deny, låser SSH till nyckelautentisering utan root-login, installerar Fail2ban, aktiverar automatiska säkerhetsuppdateringar och verifierar resultatet med en säkerhetsskanning i Lynis.",
+        followup: "Hur ser du vilka portar och processer som just nu lyssnar på nätverket i Linux?"
+      },
+      {
+        id: "f12", topicId: 12,
+        question: "★VG: Hur dokumenterar du serverkonfiguration och driftåtgärder så att en annan tekniker kan ta över driften?",
+        keywords: ["Fastställd mall", "Nätverks- & IP-plan", "Tjänster, sökvägar & behörighetsmatris", "Runbooks / återställningssteg", "Versionshanterad i Git"],
+        modelAnswer: "Jag följer en enhetlig mall i Markdown som lagras i vårt Git-repo. Den innehåller översiktsbild, IP-plan, OS- och hårdvaruspecifikation, installerade tjänster med sökvägar till konfigurationsfiler, grupp- och behörighetsmatris, backup-/återställningsrutiner samt en ändringslogg. Allt hålls fritt från lösenord i klartext.",
+        followup: "Vilken information är viktigast för en kollega som kl. 02:00 på natten måste återställa er filserver efter en krasch?"
+      },
+      {
+        id: "f13", topicId: 13,
+        question: "Hur tillämpar du generativa AI-verktyg vid konfiguration och felsökning på ett ansvarsfullt sätt?",
+        keywords: ["Anonymisera indata", "Verifiera mot eget test i VM", "Kontrollera mot man-sidor/dokumentation", "Dokumentera AI-avvikelser", "Full egen förståelse"],
+        modelAnswer: "Jag använder AI för att bolla felsökningshypoteser, analysera anonymiserade loggar och ta fram utkast till skript. Varje förslag testas i vår VM-miljö och kontrolleras mot officiell dokumentation. När AI:ns förslag avviker från verkligheten (t.ex. felaktig syntax eller osäkra standardvärden) dokumenterar jag avvikelsen och lösningen.",
+        followup: "Ge ett konkret exempel på hur du verifierar ett AI-genererat kommando innan du kör det på servern."
+      },
+      {
+        id: "f14", topicId: 14,
+        question: "♦Career: Hur presenterar du din kompetens, erfarenhet och yrkesprofil tydligt och mottagaranpassat?",
+        keywords: ["Mottagaranpassning", "Teknisk kärna (Linux, Windows/AD, nätverk, säkerhet)", "Praktiska labbar & felsökning", "Struktur & dokumentation"],
+        modelAnswer: "Jag anpassar presentationen efter mottagaren (t.ex. rekryterande IT-chef eller teknisk teamledare) och lyfter fram konkreta bevis på vad jag kan bygga och drifta: säkra Linux- och Windows-servrar, AD-struktur, behörighetsmodeller, backupverifiering och spårbar dokumentation i Git.",
+        followup: "Hur beskriver du ditt eget bidrag i gruppprojektet så att det blir tydligt vad just du ansvarat för?"
+      },
+      {
+        id: "f15", topicId: 15,
+        question: "♦Career: Hur analyserar du arbetslivsnära information och motiverar ditt urval av relevanta organisationer?",
+        keywords: ["Tekniskt sammanhang & driftmodell", "In-house IT vs konsult/MSP", "Säkerhets- & kvalitetskrav", "Koppling till egen kompetensprofil"],
+        modelAnswer: "Jag undersöker organisationens verksamhet, infrastrukturstack (t.ex. hybridmiljö med Windows/Linux/moln), driftmodell och säkerhetsfokus, och motiverar varför just dessa organisationer matchar min tekniska profil och utvecklingsmål.",
+        followup: "Vilka källor använder du för att ta reda på vilken teknisk miljö och driftmodell en organisation har?"
+      },
+      {
+        id: "f16", topicId: 16,
+        question: "Hur samarbetar ni i ett gemensamt Git-repositorium så att varje individs bidrag blir spårbart?",
+        keywords: ["Personliga commits (git config user.name/email)", "Feature branches", "Pull Requests & code review", ".gitignore (inga hemligheter)", "Spårbar historik"],
+        modelAnswer: "Varje teammedlem arbetar från sitt eget Git-konto på separata feature-branches döpta efter uppgift, och slår ihop ändringar mot main via Pull Requests som granskas av en gruppkompis. Vi använder .gitignore för hemligheter och skriver tydliga commit-meddelanden så att git log tydligt visar varje individs bidrag.",
+        followup: "Varför får man inte arbeta flera personer på samma delade Git-konto i ett kursprojekt?"
+      },
+      {
+        id: "f17", topicId: 17,
+        question: "Kompetensmål: Hur bygger, dokumenterar och motiverar du en grundläggande och säker servermiljö självständigt?",
+        keywords: ["Helhetssyn", "Nätverk & identitet", "Minsta-rättighet-principen", "Härdning & backup", "Spårbar dokumentation", "Arkitekturmotivering"],
+        modelAnswer: "Jag knyter ihop hela kedjan: segmenterat nätverk, central identitetshantering i AD DS/Linux, rollbaserad fildelning enligt minsta-rättighet-principen, brandväggs- och SSH-härdning verifierad med Lynis, automatiserad och teståterställd backup samt komplett driftdokumentation i Git – och kan motivera varje val utifrån säkerhet, tillgänglighet och förvaltningsbarhet.",
+        followup: "Vilken är den svagaste länken i er nuvarande projektmiljö om en angripare väl tar sig in på klientnätet?"
+      }
+    ];
+
+    const SCENARIO_DATA = [
+      {
+        id: "s1", topicId: 8,
+        title: "Case 1: Samba-utdelningen nekar skrivning trots 'writable = yes'",
+        scenario: "Du har satt upp en Samba-utdelning <code>/srv/delat/ekonomi</code> på en Ubuntu-server. I <code>smb.conf</code> står det <code>valid users = @ekonomi</code> och <code>writable = yes</code>. Användaren Sara är medlem i gruppen <code>ekonomi</code> och har satt Samba-lösenord. Ändå får hon 'Permission denied' när hon försöker skapa en fil.",
+        promptQuestion: "Vilka två saker i Linux-filsystemet måste du kontrollera och åtgärda?",
+        rootCause: "Samba kan aldrig ge mer rättigheter än vad det underliggande Linux-filsystemet tillåter. Katalogen <code>/srv/delat/ekonomi</code> ägs troligen fortfarande av <code>root:root</code> med rättigheter <code>755</code>.",
+        solution: "1. Ändra gruppägare: <code>sudo chown -R root:ekonomi /srv/delat/ekonomi</code>\n2. Sätt gruppens skrivrättigheter + setgid så nya filer ärver gruppen: <code>sudo chmod -R 2770 /srv/delat/ekonomi</code>\n3. Verifiera med <code>ls -ld /srv/delat/ekonomi</code> (ska visa <code>drwxrws---</code>)."
+      },
+      {
+        id: "s2", topicId: 9,
+        title: "Case 2: Windows-klient kan inte gå med i Active Directory-domänen",
+        scenario: "En nysatt Windows-klient i samma nätverk som er nya Domänkontrollant (192.168.56.20) ska anslutas till domänen <code>corp.local</code>. Du kan pinga <code>192.168.56.20</code>, men när du försöker joina domänen får du felet: 'An Active Directory Domain Controller for the domain corp.local could not be contacted'.",
+        promptQuestion: "Vad är den absolut vanligaste orsaken och hur löser du det?",
+        rootCause: "Klientens DNS-inställning pekar på en extern DNS (t.ex. 8.8.8.8 eller NAT-gatewayen) istället för Domänkontrollanten. Utan intern DNS hittar klienten inte AD:s SRV-poster.",
+        solution: "1. Peka klientens primära DNS-server till DC:ns IP-adress (<code>192.168.56.20</code>) via DHCP eller statiskt.\n2. Rensa DNS-cache med <code>ipconfig /flushdns</code>.\n3. Verifiera med <code>nslookup -type=srv _ldap._tcp.dc._msdcs.corp.local</code> innan domänanslutning."
+      },
+      {
+        id: "s3", topicId: 6,
+        title: "Case 3: SSH-nyckelinloggning ignoreras och servern frågar fortfarande efter lösenord",
+        scenario: "Du har kopierat din publika SSH-nyckel till <code>/home/adminuser/.ssh/authorized_keys</code> på en Linux-server. Trots detta ber SSH om lösenord varje gång du ansluter.",
+        promptQuestion: "Vilka behörighetskrav ställer OpenSSH-daemonen (sshd) på hemkatalogen och .ssh-filerna?",
+        rootCause: "OpenSSH vägrar av säkerhetsskäl att lita på <code>authorized_keys</code> om katalogen eller filen är skrivbar för andra användare (t.ex. <code>777</code> eller <code>775</code>).",
+        solution: "1. Sätt rättigheter på hemkatalogen: <code>chmod 750 /home/adminuser</code>\n2. Sätt rättigheter på .ssh-mappen: <code>chmod 700 ~/.ssh</code>\n3. Sätt rättigheter på nyckelfilen: <code>chmod 600 ~/.ssh/authorized_keys</code> och säkerställ att <code>adminuser</code> äger filerna."
+      },
+      {
+        id: "s4", topicId: 5,
+        title: "Case 4: Ransomware slår ut filservern – men backupen är också krypterad",
+        scenario: "Ett företag har en schemalagd backup som varje natt kopierar filer från filservern till en monterad nätverksutdelning (<code>\\\\backup-nas\\share</code>) som administratörskontot har full skrivrättighet till. När en administratörs dator infekteras av ransomware krypteras både filservern och backupen.",
+        promptQuestion: "Vilken brist i backuparkitekturen orsakade detta och hur bygger du bort den?",
+        rootCause: "Backupen var alltid online, monterad med full skrivrättighet från samma kontext som produktionsmiljön ('push' utan immutability).",
+        solution: "1. Implementera <strong>3-2-1-1-0</strong> med <strong>immutable (oföränderlig)</strong> backup (t.ex. WORM / Object Lock) eller offline-lagring.\n2. Använd 'pull'-backup där backupservern hämtar data med separata inloggningsuppgifter som inte är med i domänen."
+      },
+      {
+        id: "s5", topicId: 11,
+        title: "Case 5: Publik Linux-server utsätts för tusentals inloggningsförsök per timme",
+        scenario: "Vid granskning av <code>/var/log/auth.log</code> på en exponerad Linux-server ser du tusentals misslyckade SSH-inloggningar från okända IP-adresser varje timme.",
+        promptQuestion: "Vilka tre lager av härdning inför du omedelbart för att stoppa attackytan?",
+        rootCause: "SSH-porten ligger öppen mot hela internet med lösenordsinloggning aktiverad och utan intrångsskydd.",
+        solution: "1. Begränsa SSH i brandväggen (<code>ufw</code>) till VPN/Jump host eller kända admin-IP:n.\n2. Stäng av lösenordsinloggning och root-login i <code>/etc/ssh/sshd_config</code> (<code>PasswordAuthentication no</code>, <code>PermitRootLogin no</code>).\n3. Installera och aktivera <strong>Fail2ban</strong> för automatisk blockering vid upprepade misslyckade försök."
+      },
+      {
+        id: "s6", topicId: 2,
+        title: "Case 6: Webbservern slutar svara fastän CPU och RAM ser normala ut",
+        scenario: "En Linux-server som kör en webbapplikation slutar plötsligt skriva till databasen och tjänsten kraschar. <code>free -h</code> visar gott om ledigt RAM, men kommandot <code>df -h</code> visar att <code>/</code> (rotfilsystemet) är 100 % fullt på grund av en ohanterad loggfil i <code>/var/log</code>.",
+        promptQuestion: "Hur borde serverns lagring och logghantering ha designats från början?",
+        rootCause: "Hela systemet låg på en enda partition utan kvotering eller loggrotation, vilket lät <code>/var/log</code> kväva hela operativsystemet.",
+        solution: "1. Lägg <code>/var</code> (och <code>/home</code>) på separata <strong>LVM-volymer</strong> vid installation.\n2. Konfigurera <strong>logrotate</strong> för att komprimera och rensa gamla loggar automatiskt.\n3. Sätt upp övervakning/larm vid t.ex. 80 % diskutnyttjande."
+      },
+      {
+        id: "s7", topicId: 16,
+        title: "Case 7: En gruppmedlem har pushat en databasnyckel i klartext till GitHub",
+        scenario: "I ert gemensamma projekt-repo har någon råkat committa filen <code>config.env</code> med riktiga lösenord till <code>main</code>. Hen raderade filen i nästa commit och pushade igen, och säger att problemet nu är löst.",
+        promptQuestion: "Varför är problemet INTE löst och vilka två åtgärder krävs nu?",
+        rootCause: "Git sparar hela historiken – lösenordet ligger kvar i föregående commit och är fullt läsbart för alla som klonar repot.",
+        solution: "1. <strong>Rotera/byt ut lösenordet och nycklarna omedelbart</strong> (betrakta dem som komprometterade).\n2. Lägg till <code>.env</code> i <code>.gitignore</code>, skicka med en mallfil (<code>.env.example</code>) och rensa historiken (t.ex. <code>git filter-repo</code>) samt aktivera branch protection på <code>main</code>."
+      },
+      {
+        id: "s8", topicId: 13,
+        title: "Case 8: AI-genererat brandväggskommando låser dig ute via SSH",
+        scenario: "Du frågar ett AI-verktyg hur du säkrar brandväggen på din nya Ubuntu-server och kör blint dess förslag: <code>sudo ufw default deny incoming && sudo ufw enable</code> utan att först tillåta port 22/tcp.",
+        promptQuestion: "Vad händer med din nuvarande och nästa SSH-session, och hur hanterar du detta enligt kursmål 13?",
+        rootCause: "När UFW aktiveras med 'default deny incoming' utan en explicit 'allow ssh'-regel blockeras all ny SSH-trafik direkt.",
+        solution: "1. Logga in via hypervisorns lokala konsol (VirtualBox/VMware), kör <code>sudo ufw allow 22/tcp</code> (helst begränsat till admin-subnät: <code>sudo ufw allow from 192.168.56.0/24 to any port 22 proto tcp</code>).\n2. Enligt kursmål 13: testa alltid AI-förslag i VM, verifiera med <code>sudo ufw status verbose</code> och dokumentera i er AI-logg att AI-förslaget saknade explicit SSH-regel."
+      }
+    ];
+
+    const VM_LAB_MODULES = [
+      {
+        id: "vm1",
+        badge: "Etapp 1 • Mål 3, 4, 7 ★VG, 8 ★VG",
+        title: "Linux-server: Användare, grupper, behörigheter & Samba-fildelning",
+        goal: "Sätt upp en rollbaserad behörighetsstruktur med minsta-rättighet-principen och dela ut den säkert via SMB.",
+        tasks: [
+          { id: "t1_1", text: "Konfigurera statisk IP på Linux-servern (t.ex. 192.168.56.10/24 via /etc/netplan/) och verifiera internet + internt nät." },
+          { id: "t1_2", text: "Skapa två funktionella grupper: 'ekonomi' och 'drift', samt två testanvändare ('sara' i ekonomi, 'erik' i drift)." },
+          { id: "t1_3", text: "Skapa /srv/delat/ekonomi och /srv/delat/drift med korrekt gruppägare och chmod 2770 (setgid) så obehöriga inte ens kan lista innehållet." },
+          { id: "t1_4", text: "Installera Samba, konfigurera utdelningarna i /etc/samba/smb.conf med 'valid users = @ekonomi' resp. '@drift', och lägg till användarna med smbpasswd -a." },
+          { id: "t1_5", text: "★VG-utmaning (Mål 7): Skapa en 'user-data' YAML-fil för Ubuntu Autoinstall (cloud-init) i ert Git-repo som automatiserar paketinstallation, användare och SSH-nyckel." }
+        ],
+        commands: `# Kör på Linux-servern (vm-linux-01):
+sudo groupadd ekonomi && sudo groupadd drift
+sudo useradd -m -s /bin/bash -G ekonomi sara
+sudo useradd -m -s /bin/bash -G drift erik
+sudo mkdir -p /srv/delat/ekonomi /srv/delat/drift
+sudo chown root:ekonomi /srv/delat/ekonomi
+sudo chown root:drift /srv/delat/drift
+sudo chmod 2770 /srv/delat/ekonomi /srv/delat/drift
+
+# Verifiera rättigheter (ska visa drwxrws---) och Samba-config:
+ls -ld /srv/delat/*
+testparm -s`,
+        examinerCheck: "Examinatorn ber dig visa ls -ld /srv/delat/ekonomi och frågar: 'Varför står det ett s i drwxrws---, och vad händer om Erik försöker gå in i ekonomimappen?'"
+      },
+      {
+        id: "vm2",
+        badge: "Etapp 2 • Mål 6, 11",
+        title: "Härdning av serverkonfiguration & åtkomstkontroll",
+        goal: "Minska attackytan på Linux-servern enligt checklista (CIS-principer) och verifiera med Lynis.",
+        tasks: [
+          { id: "t2_1", text: "Generera ett SSH-nyckelpar (ed25519) på klienten och kopiera publika nyckeln till ditt admin-konto på Linux-servern." },
+          { id: "t2_2", text: "Härda /etc/ssh/sshd_config: sätt PermitRootLogin no och PasswordAuthentication no, och ladda om sshd." },
+          { id: "t2_3", text: "Aktivera brandväggen UFW med default deny incoming och tillåt enbart SSH (22/tcp) och Samba (445/tcp) från ert interna subnät." },
+          { id: "t2_4", text: "Installera och aktivera Fail2ban samt kör en säkerhetsrevision med 'sudo lynis audit system' och åtgärda minst 2 varningar." }
+        ],
+        commands: `# Verifiera aktiv SSH-konfiguration, brandvägg och lyssnande portar:
+sudo sshd -T | grep -E "permitrootlogin|passwordauthentication|pubkeyauthentication"
+sudo ufw status verbose
+ss -tulnp
+sudo lynis audit system --quick`,
+        examinerCheck: "Examinatorn frågar: 'Vilka portar lyssnar utåt på din server just nu, och hur bevisar du att lösenordsinloggning över SSH är avstängd?'"
+      },
+      {
+        id: "vm3",
+        badge: "Etapp 3 • Mål 5, 10",
+        title: "Automatiserad backup & verifierad test-restore",
+        goal: "Implementera en schemalagd backup-rutin och bevisa att återställning fungerar utan dataförlust.",
+        tasks: [
+          { id: "t3_1", text: "Skapa ett backup-skript (/usr/local/sbin/backup-delat.sh) som säkerhetskopierar /srv/delat till /var/backups/delat med rsync -a och loggar tidsstämpel." },
+          { id: "t3_2", text: "Schemalägg skriptet via cron eller systemd timer så det körs automatiskt (t.ex. varje timme)." },
+          { id: "t3_3", text: "Skapa en skarp testfil i /srv/delat/ekonomi/budget2026.txt, kör backupen, radera därefter originalfilen och genomför en test-restore till /tmp/restore-test." },
+          { id: "t3_4", text: "Verifiera att filinnehåll, ägare och rättigheter i /tmp/restore-test är identiska med originalet." }
+        ],
+        commands: `# Exempel på backup- och test-restore-verifiering:
+sudo mkdir -p /var/backups/delat /tmp/restore-test
+sudo rsync -av --delete /srv/delat/ /var/backups/delat/ | sudo tee -a /var/log/backup-delat.log
+
+# Efter att du raderat testfilen i /srv/delat/ekonomi/:
+sudo rsync -av /var/backups/delat/ekonomi/ /tmp/restore-test/
+ls -la /tmp/restore-test/`,
+        examinerCheck: "Examinatorn frågar: 'Hur vet du att din backup faktiskt fungerar, och hur uppfyller din lösning 3-2-1-principen?'"
+      },
+      {
+        id: "vm4",
+        badge: "Etapp 4 • Mål 9, 12 ★VG, 13, 16",
+        title: "Windows Server AD DS/GPO + Git-dokumentation & AI-logg",
+        goal: "Knyt ihop Windows-identitet med er dokumenterade infrastruktur i ett spårbart Git-repo.",
+        tasks: [
+          { id: "t4_1", text: "På Windows Server (192.168.56.20): installera AD DS + DNS, befordra till domänkontrollant och skapa OU-struktur (Företag -> Avdelningar -> Ekonomi/Drift)." },
+          { id: "t4_2", text: "Skapa användare och Security Groups enligt AGDLP-principen, samt länka minst en säkerhets-GPO (t.ex. lösenordslängd / brandväggsprofil)." },
+          { id: "t4_3", text: "Anslut Windows-klienten till domänen, logga in som domänanvändare och verifiera GPO med 'gpresult /r' samt anslutning mot Samba-utdelningen." },
+          { id: "t4_4", text: "★VG (Mål 12, 13, 16): Pusha IP-plan, driftdokumentation (runbook) och en AI-avvikelselogg till ert gemensamma Git-repo via egen branch + Pull Request." }
+        ],
+        commands: `# Kör i PowerShell på Windows Server / Windows-klient:
+Get-ADDomainController | Select-Object Name, IPv4Address, Site
+Get-ADOrganizationalUnit -Filter * | Select-Object Name, DistinguishedName
+gpresult /r
+
+# I ert Git-repo (lokalt):
+git checkout -b docs/server-runbook
+git status
+git log --oneline --graph -n 10`,
+        examinerCheck: "Examinatorn ber dig öppna ert Git-repo och visa din Pull Request samt driftdokumentation: 'Kan en annan tekniker ta över er miljö enbart utifrån detta?'"
+      }
+    ];
+
+    const SABOTAGE_CHALLENGES = [
+      {
+        id: "sab1",
+        title: "Sabotage A: 'Nätverksutdelningen slutade fungera!' (Mål 4, 8)",
+        setupForPartner: "Din kompis kör i smyg: <code>sudo chmod 750 /srv/delat/ekonomi</code> eller kommenterar bort <code>valid users</code> i <code>/etc/samba/smb.conf</code> och kör <code>sudo systemctl restart smbd</code>.",
+        symptom: "Sara kan ansluta till servern men nekas åtkomst eller kan inte skapa filer i ekonomimappen.",
+        hint: "Kontrollera i ordning: 1) Tjänstestatus (<code>systemctl status smbd</code>), 2) Samba-config (<code>testparm</code>), 3) Gruppmedlemskap (<code>id sara</code>), 4) Filsystemsrättigheter (<code>ls -ld /srv/delat/ekonomi</code>)."
+      },
+      {
+        id: "sab2",
+        title: "Sabotage B: 'Domäninloggningen fungerar inte längre!' (Mål 3, 9)",
+        setupForPartner: "Din kompis ändrar DNS-servern på Windows-klienten till <code>8.8.8.8</code> (istället för Domänkontrollantens IP) och kör <code>ipconfig /flushdns</code>.",
+        symptom: "Klienten kan pinga domänkontrollantens IP-adress men hittar inte domänen vid inloggning eller <code>nltest /dsgetdc:</code>.",
+        hint: "Kör <code>ipconfig /all</code> och <code>nslookup corp.local</code> på klienten. Visa examinatorn hur DNS SRV-poster styr AD-uppslagningen."
+      },
+      {
+        id: "sab3",
+        title: "Sabotage C: 'SSH-nyckeln slutade fungera!' (Mål 6, 7, 11)",
+        setupForPartner: "Din kompis kör i smyg: <code>chmod 775 ~/.ssh</code> på din admin-användare på Linux-servern.",
+        symptom: "SSH vägrar acceptera din privata nyckel och faller tillbaka på lösenord (eller säger 'Permission denied (publickey)').",
+        hint: "Inspektera <code>/var/log/auth.log</code> (<code>sudo tail -n 20 /var/log/auth.log</code>) – där loggar sshd exakt varför nyckeln avvisades ('Authentication refused: bad ownership or modes for directory')."
+      }
+    ];
+
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+    }
+
+    function shuffleQuestionOptions(q) {
+      const correctText = q.options[q.correct];
+      shuffleArray(q.options);
+      q.correct = q.options.indexOf(correctText);
+    }
+
+    // Blanda svarsalternativen A-D direkt vid sidladdning
+    QUIZ_DATA.forEach(shuffleQuestionOptions);
+
+    // State
+    let state = {
+      mode: "quiz",
+      groupFilter: "all",
+      topicFilter: "all",
+      flaggedOnly: false,
+      currentIndex: 0,
+      score: 0,
+      answered: {}, // Lagrar den valda svarstexten så omblandning aldrig bryter rättningen
+      revealed: {},
+      flagged: JSON.parse(localStorage.getItem("validering_flagged") || "[]"),
+      vmChecked: JSON.parse(localStorage.getItem("validering_vm_checks") || "{}")
+    };
+
+    const topicSelect = document.getElementById("topicFilter");
+    TOPICS.forEach(t => {
+      const opt = document.createElement("option");
+      opt.value = String(t.id);
+      opt.textContent = t.title;
+      topicSelect.appendChild(opt);
+    });
+
+    function saveFlagged() {
+      localStorage.setItem("validering_flagged", JSON.stringify(state.flagged));
+      updateFlagButton();
+    }
+
+    function saveVmChecks() {
+      localStorage.setItem("validering_vm_checks", JSON.stringify(state.vmChecked));
+    }
+
+    function updateFlagButton() {
+      const btn = document.getElementById("flaggedOnlyBtn");
+      btn.textContent = `Endast markerade (${state.flagged.length})`;
+      btn.classList.toggle("active", state.flaggedOnly);
+    }
+
+    function toggleFlag(itemId) {
+      if (state.flagged.includes(itemId)) {
+        state.flagged = state.flagged.filter(id => id !== itemId);
+      } else {
+        state.flagged.push(itemId);
+      }
+      saveFlagged();
+      render();
+    }
+
+    function getTopicById(id) {
+      return TOPICS.find(t => t.id === id) || TOPICS[0];
+    }
+
+    function getFilteredItems() {
+      let source = state.mode === "quiz"
+        ? QUIZ_DATA
+        : state.mode === "flashcards"
+          ? FLASHCARD_DATA
+          : SCENARIO_DATA;
+
+      return source.filter(item => {
+        const topic = getTopicById(item.topicId);
+        if (state.groupFilter === "VG" && topic.tag !== "VG") return false;
+        if (state.groupFilter !== "all" && state.groupFilter !== "VG" && topic.group !== state.groupFilter) return false;
+        if (state.topicFilter !== "all" && String(item.topicId) !== state.topicFilter) return false;
+        if (state.flaggedOnly && !state.flagged.includes(item.id)) return false;
+        return true;
+      });
+    }
+
+    function renderBadges(topic) {
+      let html = `<span class="badge">${topic.group}</span>`;
+      html += `<span class="badge">${topic.title}</span>`;
+      if (topic.tag === "VG") html += `<span class="badge vg">★VG-krav</span>`;
+      if (topic.tag === "Career") html += `<span class="badge career">♦Career (Karriärcoach)</span>`;
+      return html;
+    }
+
+    function render() {
+      const filterBar = document.getElementById("filterBar");
+      const shuffleBtn = document.getElementById("shuffleBtn");
+
+      if (state.mode === "vmlab") {
+        filterBar.style.display = "none";
+        shuffleBtn.style.display = "none";
+        renderVmLab(document.getElementById("appContainer"));
+        return;
+      }
+
+      filterBar.style.display = "flex";
+      shuffleBtn.style.display = "inline-block";
+
+      updateFlagButton();
+      const totalAnswered = Object.keys(state.answered).length;
+      document.getElementById("scoreDisplay").textContent = `Snabbkollen: ${state.score} / ${totalAnswered} rätt`;
+
+      const container = document.getElementById("appContainer");
+      const items = getFilteredItems();
+
+      if (items.length === 0) {
+        container.innerHTML = `
+          <div class="card empty-state">
+            <p>Inga frågor matchar ditt nuvarande filter.</p>
+            <br />
+            <button onclick="resetFilters()">Återställ filter</button>
+          </div>
+        `;
+        return;
+      }
+
+      if (state.currentIndex >= items.length) state.currentIndex = 0;
+      if (state.currentIndex < 0) state.currentIndex = items.length - 1;
+
+      const item = items[state.currentIndex];
+      const topic = getTopicById(item.topicId);
+      const isFlagged = state.flagged.includes(item.id);
+
+      if (state.mode === "quiz") {
+        renderQuizCard(container, item, topic, isFlagged, items.length);
+      } else if (state.mode === "flashcards") {
+        renderFlashcard(container, item, topic, isFlagged, items.length);
+      } else {
+        renderScenarioCard(container, item, topic, isFlagged, items.length);
+      }
+    }
+
+    function renderQuizCard(container, item, topic, isFlagged, total) {
+      const userChoiceText = state.answered[item.id];
+      const hasAnswered = userChoiceText !== undefined;
+      const correctText = item.options[item.correct];
+      const letters = ["A", "B", "C", "D"];
+
+      let optionsHtml = item.options.map((opt, idx) => {
+        let cls = "option-btn";
+        if (hasAnswered) {
+          if (opt === correctText) cls += " correct";
+          else if (opt === userChoiceText) cls += " wrong";
+        }
+        return `
+          <button class="${cls}" ${hasAnswered ? "disabled" : ""} onclick="answerQuiz('${item.id}', ${idx})">
+            <span class="option-letter">${letters[idx]}.</span>
+            <span>${opt}</span>
+          </button>
+        `;
+      }).join("");
+
+      container.innerHTML = `
+        <article class="card">
+          <div class="meta-row">
+            <div class="badges">${renderBadges(topic)}</div>
+            <button class="flag-btn ${isFlagged ? "flagged" : ""}" onclick="toggleFlag('${item.id}')">
+              ${isFlagged ? "★ Markerad som osäker" : "☆ Markera som osäker"}
+            </button>
+          </div>
+
+          <div class="question-text">${item.question}</div>
+          <div class="options">${optionsHtml}</div>
+
+          <div class="feedback-box ${hasAnswered ? "visible" : ""}">
+            <strong>${userChoiceText === correctText ? "Rätt!" : "Inte riktigt."}</strong> ${item.explanation}
+          </div>
+        </article>
+
+        <div class="nav-controls">
+          <button onclick="navigate(-1)">← Föregående</button>
+          <span class="progress-info">Fråga ${state.currentIndex + 1} av ${total}</span>
+          <button onclick="navigate(1)">Nästa →</button>
+        </div>
+      `;
+    }
+
+    function renderFlashcard(container, item, topic, isFlagged, total) {
+      const isRevealed = !!state.revealed[item.id];
+      const keywordsHtml = item.keywords.map(k => `<span class="keyword-pill">✓ ${k}</span>`).join("");
+
+      container.innerHTML = `
+        <article class="card">
+          <div class="meta-row">
+            <div class="badges">${renderBadges(topic)}</div>
+            <button class="flag-btn ${isFlagged ? "flagged" : ""}" onclick="toggleFlag('${item.id}')">
+              ${isFlagged ? "★ Markerad som osäker" : "☆ Markera som osäker"}
+            </button>
+          </div>
+
+          <p class="subtitle" style="margin-bottom: 0.4rem;">Svara högt med egna ord innan du vänder kortet:</p>
+          <div class="question-text">${item.question}</div>
+
+          <button class="active" onclick="toggleReveal('${item.id}')">
+            ${isRevealed ? "Dölj facit & nyckelord" : "Visa nyckelord & mönstersvar"}
+          </button>
+
+          <div class="feedback-box ${isRevealed ? "visible" : ""}">
+            <strong>Nyckelord som examinatorn vill höra:</strong>
+            <div class="keywords">${keywordsHtml}</div>
+            <p><strong>Exempel på bra svar:</strong><br/>${item.modelAnswer}</p>
+            <div class="followup-box">
+              <strong>Examinatorns följdfråga:</strong> ${item.followup}
+            </div>
+          </div>
+        </article>
+
+        <div class="nav-controls">
+          <button onclick="navigate(-1)">← Föregående</button>
+          <span class="progress-info">Kort ${state.currentIndex + 1} av ${total}</span>
+          <button onclick="navigate(1)">Nästa →</button>
+        </div>
+      `;
+    }
+
+    function renderScenarioCard(container, item, topic, isFlagged, total) {
+      const isRevealed = !!state.revealed[item.id];
+      const formattedSolution = item.solution.replace(/\n/g, "<br/>");
+
+      container.innerHTML = `
+        <article class="card">
+          <div class="meta-row">
+            <div class="badges">${renderBadges(topic)}</div>
+            <button class="flag-btn ${isFlagged ? "flagged" : ""}" onclick="toggleFlag('${item.id}')">
+              ${isFlagged ? "★ Markerad som osäker" : "☆ Markera som osäker"}
+            </button>
+          </div>
+
+          <div class="question-text">${item.title}</div>
+          <div class="scenario-box">${item.scenario}</div>
+          <p style="font-weight: 600; margin-bottom: 1rem;">Uppgift: ${item.promptQuestion}</p>
+
+          <button class="active" onclick="toggleReveal('${item.id}')">
+            ${isRevealed ? "Dölj felsökning & lösning" : "Visa orsak & lösning"}
+          </button>
+
+          <div class="feedback-box ${isRevealed ? "visible" : ""}">
+            <p style="margin-bottom: 0.75rem;"><strong>Grundorsak:</strong> ${item.rootCause}</p>
+            <p><strong>Åtgärd & motivering:</strong><br/>${formattedSolution}</p>
+          </div>
+        </article>
+
+        <div class="nav-controls">
+          <button onclick="navigate(-1)">← Föregående</button>
+          <span class="progress-info">Scenario ${state.currentIndex + 1} av ${total}</span>
+          <button onclick="navigate(1)">Nästa →</button>
+        </div>
+      `;
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function renderVmLab(container) {
+      const allTasks = VM_LAB_MODULES.flatMap(m => m.tasks);
+      const completedCount = allTasks.filter(t => state.vmChecked[t.id]).length;
+      const pct = Math.round((completedCount / allTasks.length) * 100);
+
+      let modulesHtml = VM_LAB_MODULES.map(mod => {
+        let tasksHtml = mod.tasks.map(t => {
+          const checked = !!state.vmChecked[t.id];
+          return `
+            <label class="task-item ${checked ? "done" : ""}">
+              <input type="checkbox" ${checked ? "checked" : ""} onchange="toggleVmTask('${t.id}')" />
+              <span>${t.text}</span>
+            </label>
+          `;
+        }).join("");
+
+        return `
+          <article class="card">
+            <div class="meta-row">
+              <div class="badges"><span class="badge">${mod.badge}</span></div>
+            </div>
+            <div class="question-text" style="margin-bottom: 0.35rem;">${mod.title}</div>
+            <p class="subtitle" style="margin-bottom: 0.75rem;">${mod.goal}</p>
+
+            <div class="task-list">${tasksHtml}</div>
+
+            <p style="font-size: 0.85rem; font-weight: 600; margin-top: 0.75rem;">Verifieringskommandon:</p>
+            <div class="cmd-block"><button class="copy-btn" data-copy="${escapeHtml(mod.commands)}">Kopiera</button>${escapeHtml(mod.commands)}</div>
+
+            <div class="followup-box">
+              <strong>Träna inför skärmdelningen:</strong> ${mod.examinerCheck}
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      let sabotageHtml = SABOTAGE_CHALLENGES.map(sab => {
+        const isOpen = !!state.revealed[sab.id];
+        return `
+          <article class="card sabotage-card">
+            <div class="question-text" style="font-size: 1.02rem; margin-bottom: 0.5rem;">${sab.title}</div>
+            <p style="font-size: 0.92rem; margin-bottom: 0.5rem;"><strong>1. Kompisens åtgärd (titta bort!):</strong> ${sab.setupForPartner}</p>
+            <p style="font-size: 0.92rem; margin-bottom: 0.85rem;"><strong>2. Symptom:</strong> ${sab.symptom}</p>
+            <button onclick="toggleReveal('${sab.id}')">${isOpen ? "Dölj felsökningsstöd" : "Visa felsökningsstöd"}</button>
+            <div class="feedback-box ${isOpen ? "visible" : ""}">
+              <strong>Systematisk felsökning:</strong> ${sab.hint}
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      container.innerHTML = `
+        <section class="card">
+          <div class="meta-row" style="margin-bottom: 0.4rem;">
+            <div class="badges">
+              <span class="badge">Praktisk VM-övning</span>
+              <span class="badge vg">Täcker mål 1–13, 16, 17</span>
+            </div>
+            <button onclick="resetVmChecks()" style="font-size: 0.8rem; padding: 0.3rem 0.65rem;">Nollställ checklista</button>
+          </div>
+          <div class="question-text" style="margin-bottom: 0.3rem;">Bygg & verifiera er miniproduktionsmiljö i VirtualBox / VMware</div>
+          <p class="subtitle">Tips: Ta en <strong>Snapshot</strong> på rena VM:ar innan ni börjar så kan ni snabbt backa och öva om!</p>
+
+          <div class="topology-grid">
+            <div class="vm-node">
+              <h4>1. vm-linux-01 (Ubuntu Server)</h4>
+              <p>IP: <code>192.168.56.10/24</code><br/>Roll: Filserver (Samba), backup-mål, härdad SSH/UFW + Lynis.</p>
+            </div>
+            <div class="vm-node">
+              <h4>2. vm-win-dc01 (Windows Server)</h4>
+              <p>IP: <code>192.168.56.20/24</code><br/>Roll: Active Directory (AD DS), DNS-server, OU-struktur & GPO.</p>
+            </div>
+            <div class="vm-node">
+              <h4>3. vm-win-cli01 (Windows 10/11)</h4>
+              <p>IP: <code>192.168.56.30</code> (DNS: <code>.20</code>)<br/>Roll: Domänklient för inloggning, <code>gpresult</code> och SMB-test.</p>
+            </div>
+          </div>
+
+          <div style="margin-top: 0.85rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.86rem; font-weight: 600;">
+              <span>Labprogress</span>
+              <span>${completedCount} / ${allTasks.length} steg klara (${pct}%)</span>
+            </div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill" style="width: ${pct}%"></div>
+            </div>
+          </div>
+        </section>
+
+        ${modulesHtml}
+
+        <h2 style="font-size: 1.15rem; margin: 1.5rem 0 0.75rem;">Sabotage-utmaningen (Kör två och två inför valideringen)</h2>
+        <p class="subtitle" style="margin-bottom: 0.9rem;">Enligt kursplanen kan ett arbete med brister godkännas om du kan förklara vad som inte fungerar och hur det åtgärdas. Turas om att sabotera och felsöka med skärmdelning!</p>
+        ${sabotageHtml}
+      `;
+    }
+
+    window.toggleVmTask = function(taskId) {
+      state.vmChecked[taskId] = !state.vmChecked[taskId];
+      saveVmChecks();
+      render();
+    };
+
+    window.resetVmChecks = function() {
+      state.vmChecked = {};
+      saveVmChecks();
+      render();
+    };
+
+    window.answerQuiz = function(id, choiceIndex) {
+      if (state.answered[id] !== undefined) return;
+      const q = QUIZ_DATA.find(item => item.id === id);
+      if (!q) return;
+      const chosenText = q.options[choiceIndex];
+      state.answered[id] = chosenText;
+      if (choiceIndex === q.correct) {
+        state.score += 1;
+      }
+      render();
+    };
+
+    window.toggleReveal = function(id) {
+      state.revealed[id] = !state.revealed[id];
+      render();
+    };
+
+    window.navigate = function(step) {
+      state.currentIndex += step;
+      render();
+    };
+
+    window.resetFilters = function() {
+      state.groupFilter = "all";
+      state.topicFilter = "all";
+      state.flaggedOnly = false;
+      state.currentIndex = 0;
+      document.getElementById("groupFilter").value = "all";
+      document.getElementById("topicFilter").value = "all";
+      render();
+    };
+
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        state.mode = btn.dataset.mode;
+        state.currentIndex = 0;
+        render();
+      });
+    });
+
+    document.getElementById("groupFilter").addEventListener("change", e => {
+      state.groupFilter = e.target.value;
+      state.currentIndex = 0;
+      render();
+    });
+
+    document.getElementById("topicFilter").addEventListener("change", e => {
+      state.topicFilter = e.target.value;
+      state.currentIndex = 0;
+      render();
+    });
+
+    document.getElementById("flaggedOnlyBtn").addEventListener("click", () => {
+      state.flaggedOnly = !state.flaggedOnly;
+      state.currentIndex = 0;
+      render();
+    });
+
+    document.getElementById("shuffleBtn").addEventListener("click", () => {
+      shuffleArray(QUIZ_DATA);
+      QUIZ_DATA.forEach(shuffleQuestionOptions);
+      shuffleArray(FLASHCARD_DATA);
+      shuffleArray(SCENARIO_DATA);
+      state.currentIndex = 0;
+      render();
+    });
+
+    document.getElementById("themeBtn").addEventListener("click", e => {
+      document.body.classList.toggle("light");
+      e.target.textContent = document.body.classList.contains("light") ? "Mörkt läge" : "Ljust läge";
+    });
+
+    document.addEventListener("click", e => {
+      if (e.target.classList.contains("copy-btn")) {
+        const text = e.target.getAttribute("data-copy");
+        navigator.clipboard.writeText(text).then(() => {
+          const orig = e.target.textContent;
+          e.target.textContent = "Kopierad!";
+          setTimeout(() => { e.target.textContent = orig; }, 1500);
+        });
+      }
+    });
+
+    document.addEventListener("keydown", e => {
+      if (e.target.tagName === "SELECT" || state.mode === "vmlab") return;
+      if (e.key === "ArrowRight") navigate(1);
+      if (e.key === "ArrowLeft") navigate(-1);
+    });
+
+    render();
+  </script>
+</body>
+</html>
